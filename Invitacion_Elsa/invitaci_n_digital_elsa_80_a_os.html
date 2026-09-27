@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis 80 Años - Elsa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold-light: #fbf0b9;
+            --gold-main: #d4af37;
+            --gold-dark: #aa7c11;
+            --bg-burgundy: #1a0307;
+            --bg-card: #2c080e;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-burgundy);
+            color: #fceade;
+            overflow-x: hidden;
+        }
+
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-cursive { font-family: 'Great Vibes', cursive; }
+
+        /* Fondo Animado de Estrellas/Destellos */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(circle at center, #2e080f 0%, #120204 100%);
+            overflow: hidden;
+        }
+
+        .sparkle {
+            position: absolute;
+            background: radial-gradient(circle, #fff 10%, rgba(212, 175, 55, 0.8) 50%, transparent 80%);
+            border-radius: 50%;
+            animation: floatSparkle linear infinite;
+        }
+
+        @keyframes floatSparkle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* Borde Dorado Decorativo */
+        .gold-border-glow {
+            border: 2px solid var(--gold-main);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3), inset 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff2a3 0%, #d4af37 50%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-gradient-btn {
+            background: linear-gradient(135deg, #fbf0b9 0%, #d4af37 50%, #996e10 100%);
+            color: #1a0307;
+            transition: all 0.3s ease;
+        }
+
+        .gold-gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Animación de apertura de sobre */
+        .envelope-wrapper {
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
+        }
+
+        .open-envelope {
+            transform: translateY(-100vh) scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Marcos y Galería */
+        .photo-card {
+            border: 3px solid transparent;
+            background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                        linear-gradient(135deg, #fbf0b9, #d4af37, #aa7c11) border-box;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start relative">
+
+    <!-- Fondo de Partículas Dinámicas -->
+    <div class="stars-bg" id="sparkles-container"></div>
+
+    <!-- ENTRADA CON SOBRE ANIMADO / PANTALLA DE BIENVENIDA -->
+    <div id="envelope-screen" class="envelope-wrapper fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-[#120204]">
+        <div class="relative w-full max-w-md p-8 rounded-2xl gold-border-glow bg-[#23050a] text-center flex flex-col items-center shadow-2xl">
+            <div class="w-20 h-20 mb-6 rounded-full gold-border-glow flex items-center justify-center bg-[#1a0307]">
+                <i class="fa-solid fa-envelope-open-text text-3xl gold-gradient-text animate-bounce"></i>
+            </div>
+            
+            <p class="font-cinzel text-sm tracking-widest text-amber-200/80 mb-1">INVITACIÓN EXCLUSIVA</p>
+            <h2 class="font-cursive text-5xl gold-gradient-text mb-2">Mis 80 Años</h2>
+            <h3 class="font-cinzel text-2xl tracking-wider text-white font-bold mb-6">ELSA</h3>
+            
+            <p class="text-xs text-amber-100/70 mb-8 font-light leading-relaxed">
+                Tiene el honor de invitarle a celebrar este gran acontecimiento de vida y alegría.
+            </p>
+
+            <button onclick="abrirInvitacion()" class="gold-gradient-btn w-full py-4 rounded-full font-cinzel font-bold text-sm tracking-widest uppercase shadow-lg flex items-center justify-center gap-3">
+                <i class="fa-solid fa-key text-xs"></i>
+                <span>Abrir Invitación</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- REPRODUCTOR DE MÚSICA FLOTANTE (AUDIO INTEGRADO) -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="LAS MAÑANITAS 'VICENTE FERNANDEZ'.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-control" class="fixed bottom-4 right-4 z-40 hidden">
+        <button onclick="toggleMusic()" id="music-btn" class="w-12 h-12 rounded-full gold-gradient-btn flex items-center justify-center shadow-2xl border border-amber-300">
+            <i class="fa-solid fa-music text-lg" id="music-icon"></i>
+        </button>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL DE LA INVITACIÓN -->
+    <main class="relative z-10 w-full max-w-md min-h-screen px-4 py-8 flex flex-col items-center">
+        
+        <!-- Header Principal -->
+        <header class="text-center my-6 w-full">
+            <p class="font-cinzel text-xs tracking-[0.3em] text-amber-300/80 uppercase">Te invito a festejar</p>
+            <h1 class="font-cursive text-6xl gold-gradient-text my-2 drop-shadow-md">80 Años</h1>
+            <h2 class="font-cinzel text-3xl font-bold tracking-widest text-white mb-3">ELSA</h2>
+            <div class="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
+        </header>
+
+        <!-- Galería de Fotos de Elsa -->
+        <section class="w-full my-4">
+            <div class="photo-card rounded-2xl p-2 shadow-2xl relative overflow-hidden">
+                <img id="carousel-img" src="Elsa_fondo_dorado_foto_1.jpg" alt="Elsa" class="w-full h-96 object-cover rounded-xl transition-all duration-700">
+                
+                <!-- Indicadores de Foto -->
+                <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+                    <button onclick="changePhoto(0)" class="w-2.5 h-2.5 rounded-full bg-white/80 transition-all" id="dot-0"></button>
+                    <button onclick="changePhoto(1)" class="w-2.5 h-2.5 rounded-full bg-white/40 transition-all" id="dot-1"></button>
+                    <button onclick="changePhoto(2)" class="w-2.5 h-2.5 rounded-full bg-white/40 transition-all" id="dot-2"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Frase Conmemorativa -->
+        <section class="text-center my-6 px-4">
+            <p class="font-cursive text-2xl text-amber-200/90 leading-relaxed">
+                "Hay momentos en la vida que son especiales por sí solos, pero compartirlos con quienes más amamos los hace inolvidables."
+            </p>
+        </section>
+
+        <!-- CUENTA REGRESIVA REAL -->
+        <section class="w-full my-6 gold-border-glow rounded-2xl p-6 bg-[#2c080e]/90 text-center backdrop-blur-sm">
+            <h3 class="font-cinzel text-xs tracking-[0.2em] text-amber-300/90 uppercase mb-4">
+                <i class="fa-regular fa-clock mr-2"></i>Tiempo Restante
+            </h3>
+            
+            <div class="grid grid-cols-4 gap-2 font-cinzel">
+                <div class="bg-[#1a0307] p-2 rounded-lg border border-amber-500/20">
+                    <span id="days" class="text-2xl font-bold gold-gradient-text block">00</span>
+                    <span class="text-[10px] text-amber-100/70 tracking-wider uppercase">Días</span>
+                </div>
+                <div class="bg-[#1a0307] p-2 rounded-lg border border-amber-500/20">
+                    <span id="hours" class="text-2xl font-bold gold-gradient-text block">00</span>
+                    <span class="text-[10px] text-amber-100/70 tracking-wider uppercase">Horas</span>
+                </div>
+                <div class="bg-[#1a0307] p-2 rounded-lg border border-amber-500/20">
+                    <span id="minutes" class="text-2xl font-bold gold-gradient-text block">00</span>
+                    <span class="text-[10px] text-amber-100/70 tracking-wider uppercase">Min</span>
+                </div>
+                <div class="bg-[#1a0307] p-2 rounded-lg border border-amber-500/20">
+                    <span id="seconds" class="text-2xl font-bold gold-gradient-text block">00</span>
+                    <span class="text-[10px] text-amber-100/70 tracking-wider uppercase">Seg</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATOS DEL EVENTO (Fecha, Hora, Lugar) -->
+        <section class="w-full space-y-4 my-2">
+            
+            <!-- Fecha y Hora -->
+            <div class="gold-border-glow rounded-2xl p-6 bg-[#2c080e]/90 text-center backdrop-blur-sm flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center mb-3">
+                    <i class="fa-regular fa-calendar-days text-xl gold-gradient-text"></i>
+                </div>
+                <h3 class="font-cinzel text-sm font-bold tracking-wider text-amber-300 uppercase mb-1">Fecha y Hora</h3>
+                <p class="text-base font-semibold text-white">Sábado, 31 de Octubre de 2026</p>
+                <p class="text-sm text-amber-100/80 mt-1">7:00 P. M.</p>
+            </div>
+
+            <!-- Lugar / Recepción con Mapa -->
+            <div class="gold-border-glow rounded-2xl p-6 bg-[#2c080e]/90 text-center backdrop-blur-sm flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center mb-3">
+                    <i class="fa-solid fa-location-dot text-xl gold-gradient-text"></i>
+                </div>
+                <h3 class="font-cinzel text-sm font-bold tracking-wider text-amber-300 uppercase mb-1">Lugar del Evento</h3>
+                <p class="text-lg font-bold text-white mb-1">ARTE & GALA</p>
+                <p class="text-xs text-amber-200/80 font-medium uppercase tracking-wider mb-2">Recepciones y Eventos</p>
+                <p class="text-xs text-amber-100/70 leading-relaxed mb-6">
+                    Av. Gran Chimú N.º 1062, Urb. Zárate, S.J.L., Lima
+                </p>
+
+                <a href="https://maps.google.com/?q=Av.+Gran+Chim%C3%BA+1062,+Z%C3%A1rate,+San+Juan+de+Lurigancho" target="_blank" rel="noopener noreferrer" class="gold-gradient-btn w-full py-3.5 rounded-full font-cinzel font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-map-location-dot text-sm"></i>
+                    <span>Abrir Google Maps</span>
+                </a>
+            </div>
+
+        </section>
+
+        <!-- CONFIRMACIÓN DE ASISTENCIA POR WHATSAPP -->
+        <section class="w-full my-6 gold-border-glow rounded-2xl p-6 bg-[#2c080e]/90 text-center backdrop-blur-sm">
+            <h3 class="font-cursive text-4xl gold-gradient-text mb-1">¿Nos Acompañas?</h3>
+            <p class="text-xs text-amber-100/80 mb-6 font-light">
+                Confirma tu asistencia para compartir juntos esta inolvidable celebración.
+            </p>
+
+            <a href="https://wa.me/51995007755?text=%C2%A1Hola!%20Deseo%20confirmar%20mi%20asistencia%20para%20celebrar%20los%2080%20a%C3%B1os%20de%20Elsa.%20%F0%9F%A5%82" target="_blank" rel="noopener noreferrer" class="gold-gradient-btn w-full py-4 rounded-full font-cinzel font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
+                <i class="fa-brands fa-whatsapp text-lg text-emerald-900"></i>
+                <span>Confirmar Asistencia</span>
+            </a>
+
+            <p class="text-[11px] text-amber-200/60 mt-4 font-mono">
+                Contacto directo: +51 995 007 755
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="my-6 text-center">
+            <p class="font-cursive text-2xl gold-gradient-text">¡Te esperamos!</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Array de fotos de Elsa
+        const photos = [
+            "Elsa_fondo_dorado_foto_1.jpg",
+            "Elsa_fondo_dorado_foto_2.jpg",
+            "Elsa_fondo_dorado_foto_3.jpg"
+        ];
+        let currentPhotoIndex = 0;
+
+        function changePhoto(index) {
+            currentPhotoIndex = index;
+            const imgEl = document.getElementById("carousel-img");
+            imgEl.style.opacity = "0.2";
+            setTimeout(() => {
+                imgEl.src = photos[currentPhotoIndex];
+                imgEl.style.opacity = "1";
+            }, 300);
+
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i === index) {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-white/90 transition-all scale-125";
+                } else {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-white/40 transition-all";
+                }
+            }
+        }
+
+        // Cambio automático de fotos cada 4 segundos
+        setInterval(() => {
+            let nextIndex = (currentPhotoIndex + 1) % photos.length;
+            changePhoto(nextIndex);
+        }, 4000);
+
+        // Control de Música
+        const bgMusic = document.getElementById("bg-music");
+        const musicBtn = document.getElementById("music-btn");
+        const musicIcon = document.getElementById("music-icon");
+        let isPlaying = false;
+
+        function abrirInvitacion() {
+            document.getElementById("envelope-screen").classList.add("open-envelope");
+            document.getElementById("music-control").classList.remove("hidden");
+            
+            // Iniciar música
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicIcon.className = "fa-solid fa-compact-disc text-lg animate-spin";
+            }).catch(e => {
+                console.log("Autoplay bloqueado por el navegador:", e);
+            });
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                isPlaying = false;
+                musicIcon.className = "fa-solid fa-music text-lg";
+            } else {
+                bgMusic.play();
+                isPlaying = true;
+                musicIcon.className = "fa-solid fa-compact-disc text-lg animate-spin";
+            }
+        }
+
+        // Cuenta Regresiva Real (31 de Octubre 2026, 7:00 PM)
+        const eventDate = new Date("Oct 31, 2026 19:00:00").getTime();
+
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? '0' + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? '0' + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? '0' + seconds : seconds;
+        }, 1000);
+
+        // Generador de Destellos en el Fondo
+        const sparklesContainer = document.getElementById("sparkles-container");
+        for (let i = 0; i < 35; i++) {
+            const sparkle = document.createElement("div");
+            sparkle.className = "sparkle";
+            const size = Math.random() * 4 + 2;
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            sparkle.style.left = `${Math.random() * 100}%`;
+            sparkle.style.animationDuration = `${Math.random() * 8 + 5}s`;
+            sparkle.style.animationDelay = `${Math.random() * 5}s`;
+            sparklesContainer.appendChild(sparkle);
+        }
+    </script>
+</body>
+</html>
